@@ -34,6 +34,11 @@ logger-elk-helm/
 - (Опционально) Nginx Ingress Controller — если включаете `ingress.enabled`
 - (Опционально) cert-manager — если используете TLS
 
+## Образ
+
+Chart использует образ `ollrins/logger-elk:1.0` из Docker Hub.
+Исходный код приложения: [logger-elk](https://github.com/Ollrins/logger-elk).
+
 ## Установка
 
 ```bash
@@ -44,21 +49,7 @@ cd logger-elk-helm
 # Установить с дефолтными значениями
 helm install logger-elk .
 ```
-## Проверка
 
-```bash
-# Линт
-helm lint .
-
-# Рендер шаблонов без установки
-helm template logger-elk .
-
-# Рендер с Ingress
-helm template logger-elk . --set ingress.enabled=true
-
-# Упаковка в .tgz
-helm package .
-```
 ## Параметры
 
 | Параметр | Описание | Значение по умолчанию |
@@ -73,7 +64,7 @@ helm package .
 | `ingress.enabled` | Включить Ingress | `false` |
 | `ingress.className` | IngressClass | `nginx` |
 | `ingress.annotations` | Аннотации Ingress | `{}` |
-| `ingress.hosts` | Список хостов и путей | `logger-elk.local` |
+| `ingress.hosts` | Список хостов и путей  (объекты `host` + `paths`) | `[{host: logger-elk.local, paths: [{path: /, pathType: Prefix}]}]` |
 | `ingress.tls` | TLS-секреты | `[]` |
 | `resources.limits.cpu` | CPU лимит | `200m` |
 | `resources.limits.memory` | Memory лимит | `256Mi` |
@@ -149,7 +140,7 @@ helm install logger-elk .
 helm install logger-elk . \
   --set replicaCount=3 \
   --set image.repository=myregistry/logger-elk \
-  --set image.tag=v1.2.3
+  --set image.tag=v1.0
 ```
 
 ### Установка с Ingress и TLS
@@ -200,7 +191,6 @@ kubectl get pods,svc,deploy
 
 # Удалить
 kind delete cluster --name logger-elk-test
-```
 ```
 
 ## Проверка chart'а (без кластера)
