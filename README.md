@@ -18,8 +18,6 @@ logger-elk-helm/
 ├── Chart.yaml              # метаданные chart'а (имя, версия, appVersion)
 ├── values.yaml             # параметры по умолчанию (реплики, образ, порты, ресурсы, ingress)
 ├── app.py                  # исходный код Flask-приложения (JSON-логи)
-├── README.md               # документация
-├── .gitignore              # игнорирует *.tgz и Dockerfile
 └── templates/
     ├── _helpers.tpl        # хелперы для имён и лейблов
     ├── deployment.yaml     # Deployment с probe'ами, resources, env
