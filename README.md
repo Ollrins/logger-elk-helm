@@ -1,4 +1,4 @@
-# logger-elk Helm Chart
+# Logger-elk Helm Chart
 
 Helm chart для Flask-приложения `logger-elk` с JSON-логами. Демонстрирует production-ready подход к упаковке приложений в Kubernetes: Deployment с probe'ами, Service, Ingress (Nginx) с поддержкой TLS, настраиваемые ресурсы и env через `values.yaml`.
 
