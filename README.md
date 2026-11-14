@@ -43,7 +43,7 @@ cd myapp-helm
 
 # Установить с дефолтными значениями
 helm install myapp .
-
+```
 ## Проверка
 
 ```bash
@@ -58,7 +58,7 @@ helm template myapp . --set ingress.enabled=true
 
 # Упаковка в .tgz
 helm package .
-
+```
 ## Параметры
 
 | Параметр | Описание | Значение по умолчанию |
@@ -95,7 +95,7 @@ Chart поддерживает Nginx Ingress. По умолчанию выклю
 helm install myapp ./myapp-helm \
   --set ingress.enabled=true \
   --set ingress.hosts[0].host=myapp.example.com
-  
+ ``` 
 ### Пример с TLS (cert-manager)
 
 ```yaml
