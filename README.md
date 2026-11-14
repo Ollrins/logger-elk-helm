@@ -86,44 +86,6 @@ helm install logger-elk . \
   --set ingress.enabled=true \
   --set ingress.hosts[0].host=logger-elk.example.com
  ``` 
- 
-### Пример с TLS (cert-manager)
-
-```yaml
-ingress:
-  enabled: true
-  className: nginx
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-  hosts:
-    - host: logger-elk.example.com
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - secretName: logger-elk-tls
-      hosts:
-        - logger-elk.example.com
-```
-
-### Несколько хостов и путей
-
-```yaml
-ingress:
-  enabled: true
-  className: nginx
-  hosts:
-    - host: logger-elk.example.com
-      paths:
-        - path: /
-          pathType: Prefix
-        - path: /api
-          pathType: Prefix
-    - host: api.example.com
-      paths:
-        - path: /
-          pathType: Prefix
-```
 
 ## Примеры
 
@@ -131,25 +93,6 @@ ingress:
 
 ```bash
 helm install logger-elk .
-```
-
-### Установка с кастомным образом и репликами
-
-```bash
-helm install logger-elk . \
-  --set replicaCount=3 \
-  --set image.repository=myregistry/logger-elk \
-  --set image.tag=v1.0
-```
-
-### Установка с Ingress и TLS
-
-```bash
-helm install logger-elk . \
-  --set ingress.enabled=true \
-  --set ingress.hosts[0].host=logger-elk.example.com \
-  --set ingress.tls[0].secretName=logger-elk-tls \
-  --set ingress.tls[0].hosts[0]=logger-elk.example.com
 ```
 
 ### Обновление
@@ -162,34 +105,6 @@ helm upgrade logger-elk . --set replicaCount=2
 
 ```bash
 helm uninstall logger-elk
-```
-
-## Проверка на реальном кластере (kind)
-
-```bash
-# Установить kind (если нет)
-curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
-chmod +x ./kind
-sudo mv ./kind /usr/local/bin/kind
-
-# Создать кластер
-kind create cluster --name logger-elk-test
-
-# Вариант А: с nginx-образом (для проверки chart'а без своего образа)
-helm install logger-elk . \
-  --set image.repository=nginx \
-  --set image.tag=latest
-
-# Вариант Б: с реальным образом из Docker Hub
-# helm install logger-elk . \
-#   --set image.repository=ollrins/logger-elk \
-#   --set image.tag=1.0
-
-# Проверить
-kubectl get pods,svc,deploy
-
-# Удалить
-kind delete cluster --name logger-elk-test
 ```
 
 ## Проверка chart'а (без кластера)
