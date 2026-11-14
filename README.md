@@ -1,6 +1,6 @@
-# myapp Helm Chart
+# logger-elk Helm Chart
 
-Helm chart для Flask-приложения `myapp` с JSON-логами. Демонстрирует production-ready подход к упаковке приложений в Kubernetes: Deployment с probe'ами, Service, Ingress (Nginx) с поддержкой TLS, настраиваемые ресурсы и env через `values.yaml`.
+Helm chart для Flask-приложения `logger-elk` с JSON-логами. Демонстрирует production-ready подход к упаковке приложений в Kubernetes: Deployment с probe'ами, Service, Ingress (Nginx) с поддержкой TLS, настраиваемые ресурсы и env через `values.yaml`.
 
 ## Что внутри
 
@@ -14,7 +14,7 @@ Helm chart для Flask-приложения `myapp` с JSON-логами. Де�
 ## Структура
 
 ```
-myapp-helm/
+logger-elk-helm/
 ├── Chart.yaml              # метаданные chart'а (имя, версия, appVersion)
 ├── values.yaml             # параметры по умолчанию (реплики, образ, порты, ресурсы, ingress)
 ├── README.md               # документация
@@ -38,11 +38,11 @@ myapp-helm/
 
 ```bash
 # Клонировать
-git clone https://github.com/Ollrins/myapp-helm.git
-cd myapp-helm
+git clone https://github.com/Ollrins/logger-elk-helm.git
+cd logger-elk-helm
 
 # Установить с дефолтными значениями
-helm install myapp .
+helm install logger-elk .
 ```
 ## Проверка
 
@@ -51,10 +51,10 @@ helm install myapp .
 helm lint .
 
 # Рендер шаблонов без установки
-helm template myapp .
+helm template logger-elk .
 
 # Рендер с Ingress
-helm template myapp . --set ingress.enabled=true
+helm template logger-elk . --set ingress.enabled=true
 
 # Упаковка в .tgz
 helm package .
@@ -64,8 +64,8 @@ helm package .
 | Параметр | Описание | Значение по умолчанию |
 |----------|----------|----------------------|
 | `replicaCount` | Количество реплик | `1` |
-| `image.repository` | Репозиторий образа | `elk-myapp` |
-| `image.tag` | Тег образа | `latest` |
+| `image.repository` | Репозиторий образа | `ollrins/logger-elk` |
+| `image.tag` | Тег образа | `1.0` |
 | `image.pullPolicy` | Политика загрузки образа | `IfNotPresent` |
 | `service.type` | Тип Service | `ClusterIP` |
 | `service.port` | Порт Service | `8000` |
@@ -73,7 +73,7 @@ helm package .
 | `ingress.enabled` | Включить Ingress | `false` |
 | `ingress.className` | IngressClass | `nginx` |
 | `ingress.annotations` | Аннотации Ingress | `{}` |
-| `ingress.hosts` | Список хостов и путей | `myapp.local` |
+| `ingress.hosts` | Список хостов и путей | `logger-elk.local` |
 | `ingress.tls` | TLS-секреты | `[]` |
 | `resources.limits.cpu` | CPU лимит | `200m` |
 | `resources.limits.memory` | Memory лимит | `256Mi` |
@@ -92,10 +92,11 @@ Chart поддерживает Nginx Ingress. По умолчанию выклю
 ### Включить Ingress
 
 ```bash
-helm install myapp ./myapp-helm \
+helm install logger-elk . \
   --set ingress.enabled=true \
-  --set ingress.hosts[0].host=myapp.example.com
+  --set ingress.hosts[0].host=logger-elk.example.com
  ``` 
+ 
 ### Пример с TLS (cert-manager)
 
 ```yaml
@@ -105,14 +106,14 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
   hosts:
-    - host: myapp.example.com
+    - host: logger-elk.example.com
       paths:
         - path: /
           pathType: Prefix
   tls:
-    - secretName: myapp-tls
+    - secretName: logger-elk-tls
       hosts:
-        - myapp.example.com
+        - logger-elk.example.com
 ```
 
 ### Несколько хостов и путей
@@ -122,7 +123,7 @@ ingress:
   enabled: true
   className: nginx
   hosts:
-    - host: myapp.example.com
+    - host: logger-elk.example.com
       paths:
         - path: /
           pathType: Prefix
@@ -139,38 +140,38 @@ ingress:
 ### Установка с дефолтными значениями
 
 ```bash
-helm install myapp .
+helm install logger-elk .
 ```
 
 ### Установка с кастомным образом и репликами
 
 ```bash
-helm install myapp . \
+helm install logger-elk . \
   --set replicaCount=3 \
-  --set image.repository=myregistry/myapp \
+  --set image.repository=myregistry/logger-elk \
   --set image.tag=v1.2.3
 ```
 
 ### Установка с Ingress и TLS
 
 ```bash
-helm install myapp . \
+helm install logger-elk . \
   --set ingress.enabled=true \
-  --set ingress.hosts[0].host=myapp.example.com \
-  --set ingress.tls[0].secretName=myapp-tls \
-  --set ingress.tls[0].hosts[0]=myapp.example.com
+  --set ingress.hosts[0].host=logger-elk.example.com \
+  --set ingress.tls[0].secretName=logger-elk-tls \
+  --set ingress.tls[0].hosts[0]=logger-elk.example.com
 ```
 
 ### Обновление
 
 ```bash
-helm upgrade myapp . --set replicaCount=2
+helm upgrade logger-elk . --set replicaCount=2
 ```
 
 ### Удаление
 
 ```bash
-helm uninstall myapp
+helm uninstall logger-elk
 ```
 
 ## Проверка на реальном кластере (kind)
@@ -182,18 +183,24 @@ chmod +x ./kind
 sudo mv ./kind /usr/local/bin/kind
 
 # Создать кластер
-kind create cluster --name myapp-test
+kind create cluster --name logger-elk-test
 
-# Установить chart (с nginx-образом, т.к. elk-myapp локально нет)
-helm install myapp ./myapp-helm \
+# Вариант А: с nginx-образом (для проверки chart'а без своего образа)
+helm install logger-elk . \
   --set image.repository=nginx \
   --set image.tag=latest
+
+# Вариант Б: с реальным образом из Docker Hub
+# helm install logger-elk . \
+#   --set image.repository=ollrins/logger-elk \
+#   --set image.tag=1.0
 
 # Проверить
 kubectl get pods,svc,deploy
 
 # Удалить
-kind delete cluster --name myapp-test
+kind delete cluster --name logger-elk-test
+```
 ```
 
 ## Проверка chart'а (без кластера)
@@ -203,21 +210,21 @@ kind delete cluster --name myapp-test
 helm lint .
 
 # Рендер без Ingress
-helm template myapp .
+helm template logger-elk .
 
 # Рендер с Ingress
-helm template myapp . --set ingress.enabled=true
+helm template logger-elk . --set ingress.enabled=true
 
 # Проверка, что все документы валидны
-helm template myapp . --set ingress.enabled=true | \
+helm template logger-elk . --set ingress.enabled=true | \
   python3 -c "import sys,yaml; [print(d['kind'], '->', d['metadata']['name']) for d in yaml.safe_load_all(sys.stdin) if d]"
 ```
 
 **Ожидаемый вывод:**
 ```
-Service -> myapp
-Deployment -> myapp
-Ingress -> myapp
+Service -> logger-elk
+Deployment -> logger-elk
+Ingress -> logger-elk
 ```
 
 ## Стек
