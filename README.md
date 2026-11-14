@@ -36,8 +36,7 @@ logger-elk-helm/
 ## Образ
 
 Chart использует образ `ollrins/logger-elk:1.0` из Docker Hub.
-Исходный код приложения: **➡️ [`app.py`](https://github.com/Ollrins/logger-elk-helm/blob/main/app.py)**
-</a>.
+Исходный код приложения: **➡️ [`app.py`](https://github.com/Ollrins/logger-elk-helm/blob/main/app.py)**.
 
 ## Установка
 
