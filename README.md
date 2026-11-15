@@ -82,18 +82,15 @@ Chart поддерживает Nginx Ingress. По умолчанию выклю
 ### Включить Ingress
 
 ```bash
+
 helm install logger-elk . \
   --set ingress.enabled=true \
-  --set ingress.hosts[0].host=logger-elk.local
+  --set ingress.hosts[0].host=logger-elk.local \
+  --set ingress.hosts[0].paths[0].path=/ \
+  --set ingress.hosts[0].paths[0].pathType=Prefix
  ``` 
 
 ## Примеры
-
-### Установка с дефолтными значениями
-
-```bash
-helm install logger-elk .
-```
 
 ### Обновление
 
