@@ -97,9 +97,11 @@ helm install logger-elk . \
 ```bash
 helm upgrade logger-elk . --set replicaCount=2
 ```
-
+### Откат
+```bash
+helm rollback logger-elk 1
+```
 ### Удаление
-
 ```bash
 helm uninstall logger-elk
 ```
