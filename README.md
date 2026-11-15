@@ -119,10 +119,8 @@ helm template logger-elk . --set ingress.enabled=true
 # Проверка, что все документы валидны
 helm template logger-elk . --set ingress.enabled=true | \
   python3 -c "import sys,yaml; [print(d['kind'], '->', d['metadata']['name']) for d in yaml.safe_load_all(sys.stdin) if d]"
-```
 
 **Ожидаемый вывод:**
-```
 Service -> logger-elk
 Deployment -> logger-elk
 Ingress -> logger-elk
